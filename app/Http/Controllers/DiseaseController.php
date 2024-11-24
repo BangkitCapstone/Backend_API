@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Diseases;
+use App\Models\Disease;
 use Illuminate\Http\Request;
 
 class DiseaseController extends Controller
@@ -12,7 +12,9 @@ class DiseaseController extends Controller
      */
     public function index()
     {
-        //
+        $datas = Disease::all();
+
+        return response()->json(["data"=>$datas]);
     }
 
     /**
@@ -34,15 +36,17 @@ class DiseaseController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Diseases $diseases)
+    public function show($id)
     {
-        //
+        $data = Disease::find($id);
+
+        return response()->json(["data"=>$data]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Diseases $diseases)
+    public function edit(Disease $diseases)
     {
         //
     }
@@ -50,7 +54,7 @@ class DiseaseController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Diseases $diseases)
+    public function update(Request $request, Disease $diseases)
     {
         //
     }
@@ -58,7 +62,7 @@ class DiseaseController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Diseases $diseases)
+    public function destroy(Disease $diseases)
     {
         //
     }
