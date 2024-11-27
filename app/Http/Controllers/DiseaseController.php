@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Disease;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DiseaseController extends Controller
 {
@@ -36,11 +37,13 @@ class DiseaseController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($id)
+    public function show($diseaseName)
     {
-        $data = Disease::find($id);
+        $data = DB::table('disease')->select('id','healing_steps')->where('disease_name','=',$diseaseName);
 
-        return response()->json(["data"=>$data]);
+        return [
+            "disease" => $data
+        ];
     }
 
     /**
@@ -66,4 +69,6 @@ class DiseaseController extends Controller
     {
         //
     }
+
+
 }

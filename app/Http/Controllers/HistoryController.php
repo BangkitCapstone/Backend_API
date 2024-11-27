@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\History;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class HistoryController extends Controller
 {
@@ -12,7 +14,9 @@ class HistoryController extends Controller
      */
     public function index()
     {
-        //
+        $datas = History::all();
+        
+        return response()->json(["datas"=>$datas]);
     }
 
     /**
@@ -28,34 +32,84 @@ class HistoryController extends Controller
      */
     public function store(Request $request)
     {
+        try{
+            $request->validate([
+                'userId'=>'required|string',
+                'image' =>'required|image|mimes:jpg,jpeg,png|max:2048',
+                'currDate' => 'required'
+            ]);
+    
+            $userId = $request->get('id');
+            $imageFile = $request->file('image');
+            $currDate = $request->get('currDate');
+    
+            $imageController = new ImageController;
+            $diseaseController = new DiseaseController;
+    
+            $imageData = $imageController->uploadImage($imageFile);
+    
+            $urlImage = $imageData['imageUrl'];
+            $diseaseName = $imageData['diseaseName'];
+    
+            $diseaseData = $diseaseController->show($diseaseName);
+    
+            $dsId = $diseaseData['id'];
+            
+    
+            $history  = new History;
+            $history->image_path = $urlImage;
+            $history->users_id = $userId;
+            $history->disease_id = $dsId;
+            $history->date =  $currDate;
+            $history->save();
+
+            return response()->json([
+                'message' => 'Image has been uploaded' 
+            ],201);
+
+
+        } catch (ValidationException $e){
+            return response()->json([
+                'error' => 'Data Validation Failed',
+                'details' => $e->errors()
+            ], 422);
+        } catch (Exception $e){
+            return response()->json([
+                'error' => 'An error occured in backend API',
+                'details' => $e->getMessage()
+            ], 500);
+        }
         
-
-
-         //PLACEHOLDER DOANG
-
-         $diseaseName = "test";
-
+            
+    
+       
+        
+        
          /*
          CATATAN AWAL
-         - jadi hasil url gambrnya bakal dikirim ke endpoint ML
+         - jadi hasil url gambarnya bakal dikirim ke endpoint ML
          - endpoint ML bakal ngirim nama penyakit
          - search cara penangannya pakai function query
          - Hasil query disimpan ke db(disease id,step healing, user id , filepath image)
-         - Data hasil identifikasi penyakitnya dikirim ke android APP
- 
- 
-         */
-
-
-
+         - Data hasil identifikasi penyakitnya dikirim ke android APP   */
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(History $history)
+    public function show($id)
     {
-        //
+        try{
+            $datas = History::find($id);
+
+            return response()->json(["userHistory"=>$datas],200);
+        }catch(Exception $e){
+            return response()->json([
+                'error' => 'An error occured in backend API',
+                'details' => $e->getMessage()
+            ], 500);
+        }
+       
     }
 
     /**

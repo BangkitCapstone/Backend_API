@@ -3,19 +3,21 @@
 namespace App\Http\Controllers;
 
 use Google\Cloud\Storage\StorageClient;
+use Illuminate\Http\File;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class ImageController extends Controller
 {
-    public function uploadImage(Request $request){
-        $request->validate([
-            'image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
-            'userId' => 'required|string',
-        ]);
+    public function uploadImage($imageFile){
+        
+        // $request->validate([
+        //     'image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+        //     'userId' => 'required|string',
+        // ]);
 
 
-        $file = $request->file('image');
+        $file = $imageFile;
        
 
         $bucketName = env('CLOUD_STORAGE_BUCKET');
@@ -32,17 +34,18 @@ class ImageController extends Controller
         $url = sprintf('https://storage.googleapis.com/%s/%s', $bucketName, $fileName);
 
         
-        //PLACEHOLDER ENDPOINT FASTAPI MLnya
+        /*
+            PLACEHOLDER ENDPOINT APInya
+
+        */
 
 
-        return response()->json([
-            'message' => 'Upload foto berhasil',
-            'url' => $url
+       $diseaseName = "test";
 
-        ],201);
-
-       
-        
+       return [
+        "imageUrl" => $url,
+        "diseaseName" => $diseaseName
+       ];
 
     }
 }
