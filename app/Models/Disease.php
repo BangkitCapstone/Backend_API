@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Disease extends Model
 {
+    protected $table = "tomato_leave_status";
+
     public function histories():HasMany{
-        return $this->hasMany(Disease::class,"disease_id");
+        return $this->hasMany(Disease::class,"status_id");
     }
 }

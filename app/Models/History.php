@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class History extends Model
 {
-    protected $table = "uploda_histories";
+    protected $table = "upload_histories";
 
 
     public function user():BelongsTo{
@@ -15,6 +15,6 @@ class History extends Model
     }
 
     public function disease():BelongsTo{
-        return $this->belongsTo(disease::class,"disease_id");
+        return $this->belongsTo(disease::class,"status_id");
     }
 }

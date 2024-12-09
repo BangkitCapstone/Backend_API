@@ -6,6 +6,7 @@ use App\Models\History;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\Response;
 
 class HistoryController extends Controller
 {
@@ -15,8 +16,8 @@ class HistoryController extends Controller
     public function index()
     {
         $datas = History::all();
-        
-        return response()->json(["datas"=>$datas]);
+
+        return response()->json(["datas" => $datas]);
     }
 
     /**
@@ -32,85 +33,57 @@ class HistoryController extends Controller
      */
     public function store(Request $request)
     {
-        try{
+        try {
+
+            $imageController = new ImageController;
+            $diseaseController = new DiseaseController;
+
             $request->validate([
-                'userId'=>'required|string',
-                'image' =>'required|image|mimes:jpg,jpeg,png|max:2048',
+                'userId' => 'required|string',
+                'image' => 'required|image|mimes:jpg,jpeg,png|max:5048',
                 'currDate' => 'required'
             ]);
-    
+
             $userId = $request->get('id');
             $imageFile = $request->file('image');
             $currDate = $request->get('currDate');
-    
-            $imageController = new ImageController;
-            $diseaseController = new DiseaseController;
-    
+
             $imageData = $imageController->uploadImage($imageFile);
-    
             $urlImage = $imageData['imageUrl'];
-            $diseaseName = $imageData['diseaseName'];
-    
-            $diseaseData = $diseaseController->show($diseaseName);
-    
-            $dsId = $diseaseData['id'];
-            
-    
+            $prediction  = $imageData['statusCode'];
+            $predictionData = $diseaseController->show($prediction);
+            $predId = $predictionData['id'];
+
             $history  = new History;
             $history->image_path = $urlImage;
             $history->users_id = $userId;
-            $history->disease_id = $dsId;
+            $history->disease_id = $predId;
             $history->date =  $currDate;
             $history->save();
 
             return response()->json([
-                'message' => 'Image has been uploaded' 
-            ],201);
-
-
-        } catch (ValidationException $e){
+                'message' => 'Image has been uploaded'
+            ], Response::HTTP_CREATED);
+        } catch (ValidationException $e) {
             return response()->json([
-                'error' => 'Data Validation Failed',
+                'status' => 'error',
+                'error_code' => 'VALIDATION_FAILED',
+                'message' => 'Validation failed for the login input data',
                 'details' => $e->errors()
-            ], 422);
-        } catch (Exception $e){
+            ], Response::HTTP_BAD_REQUEST);
+        } catch (Exception $e) {
             return response()->json([
-                'error' => 'An error occured in backend API',
-                'details' => $e->getMessage()
-            ], 500);
+                'error' => 'error',
+                'error_code' => 'INTERNAL_SERVER_ERROR',
+                'message' => 'An unexpected error occured in backend API',
+                'details' => [
+                    'exception' => $e->getMessage()
+                ]
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-        
-            
-    
-       
-        
-        
-         /*
-         CATATAN AWAL
-         - jadi hasil url gambarnya bakal dikirim ke endpoint ML
-         - endpoint ML bakal ngirim nama penyakit
-         - search cara penangannya pakai function query
-         - Hasil query disimpan ke db(disease id,step healing, user id , filepath image)
-         - Data hasil identifikasi penyakitnya dikirim ke android APP   */
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show($id)
-    {
-        try{
-            $datas = History::find($id);
-
-            return response()->json(["userHistory"=>$datas],200);
-        }catch(Exception $e){
-            return response()->json([
-                'error' => 'An error occured in backend API',
-                'details' => $e->getMessage()
-            ], 500);
-        }
-       
-    }
+    public function show(History $history) {}
 
     /**
      * Show the form for editing the specified resource.
@@ -134,5 +107,62 @@ class HistoryController extends Controller
     public function destroy(History $history)
     {
         //
+    }
+
+    public function userHistories(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|integer',
+        ]);
+
+        $userId = $request->user_id;
+
+        // Query all histories based on user_id, join tomato_leave_status to get status_name
+        $histories = History::join('tomato_leave_status', 'upload_histories.status_id', '=', 'tomato_leave_status.id')
+            ->where('upload_histories.users_id', $userId)
+            ->select(
+                'upload_histories.id',
+                'upload_histories.image_path',
+                'upload_histories.date',
+                'tomato_leave_status.status_name'
+            )
+            ->get();
+
+        return response()->json([
+            'data' => $histories,
+        ], Response::HTTP_OK);
+    }
+
+    public function userUploadHistory(Request $request) {
+        $request->validate([
+            'user_id' => 'required|integer',
+            'history_id' => 'required|integer',
+        ]);
+
+        $userId = $request->user_id;
+        $historyId = $request->history_id;
+
+        // Query individual history, join tomato_leave_status to get status_name and healing_steps
+        $history = History::join('tomato_leave_status', 'upload_histories.status_id', '=', 'tomato_leave_status.id')
+            ->where('upload_histories.users_id', $userId)
+            ->where('upload_histories.id', $historyId)
+            ->select(
+                'upload_histories.id',
+                'upload_histories.image_path',
+                'upload_histories.date',
+                'tomato_leave_status.status_name',
+                'tomato_leave_status.healing_steps'
+            )
+            ->first();
+
+        if (!$history) {
+            return response()->json([
+                'error' => 'History not found for this user.',
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        return response()->json([
+            'data' => $history,
+        ], Response::HTTP_OK);
     }
 }
