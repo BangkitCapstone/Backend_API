@@ -2,16 +2,20 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Models\User;
-use Illuminate\Validation\ValidationException;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
-use Kreait\Firebase\Exception\Auth\FailedToVerifyToken;
+use Illuminate\Validation\ValidationException;
+
+
 
 class AuthController extends Controller
 {
+
+
     public function register(Request $request)
     {
         try {
@@ -100,19 +104,5 @@ class AuthController extends Controller
         }
     }
 
-
-    public function verifyIdToken($idToken)
-    {
-        try {
-        } catch (Exception $e) {
-            return response()->json([
-                'error' => 'error',
-                'error_code' => 'VERIFY FIREBASE TOKEN FAILED',
-                'message' => 'An unexpected error occured when verify firebase token',
-                'details' => [
-                    'exception' => $e->getMessage()
-                ]
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-    }
+    
 }

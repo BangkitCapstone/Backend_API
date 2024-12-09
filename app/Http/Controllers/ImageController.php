@@ -6,7 +6,8 @@ use Exception;
 use Google\Cloud\Storage\StorageClient;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Response;
-
+use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
 
 class ImageController extends Controller
 {
@@ -52,13 +53,15 @@ class ImageController extends Controller
     /**
      * Upload the image to cloud storage and return the file name.
      */
-    private function uploadToCloudStorage($imageFile)
+    private function uploadToCloudStorage(Request $request)
     {
         try {
 
-            $filePath = storage_path('app/google/service_account_key.json');
+            $imageFile = $request->file('image');
+
+            $filePath = env('GOOGLE_CLOUD_KEY_FILE');
             $storage = new StorageClient([
-               'keyFilePath' => $filePath,
+               'keyFilePath' => $filePath
             ]);
 
             $bucketName = env('GOOGLE_CLOUD_STORAGE_BUCKET');
@@ -76,9 +79,14 @@ class ImageController extends Controller
                     
                 ]
             );
-            $fileUrl = 'https://storage.googleapis.com/' . $bucketName . '/uploads/' . $fileName;
-            return $fileUrl;
+            return $fileName;
         } catch (\Exception $e) {
+            Log::error('Cloud Storage upload failed', [
+                'message' => $e->getMessage(),
+                'code' => $e->getCode(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
 
             throw new \Exception(
                 'Cloud Storage Failed. Details: ' . $e->getMessage()
