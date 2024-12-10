@@ -20,7 +20,7 @@ class AuthController extends Controller
         try {
             $request->validate([
                 'username' => 'required',
-                'new_password' => 'required',
+                'password' => 'required',
                 'email' => 'required',
             ]);
 
