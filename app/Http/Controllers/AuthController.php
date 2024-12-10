@@ -15,13 +15,12 @@ use Illuminate\Validation\ValidationException;
 class AuthController extends Controller
 {
 
-
     public function register(Request $request)
     {
         try {
             $request->validate([
                 'username' => 'required',
-                'password' => 'required',
+                'new_password' => 'required',
                 'email' => 'required',
             ]);
 
@@ -103,6 +102,8 @@ class AuthController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+    
 
     
 }
