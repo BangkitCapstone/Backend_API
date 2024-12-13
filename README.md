@@ -1,66 +1,266 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Capstone Project Backend API Documentation
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This documentation outlines the endpoints and features of the Capstone Project Backend API. The API supports user authentication, profile management, image classification uploads, and history management.
 
-## About Laravel
+## Installation and Setup
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### Requirements
+- PHP >= 8.0
+- Composer
+- Laravel Framework >= 9.x
+- Google Cloud SDK (for deployment)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Installation Steps
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+1. Clone the Repository:
+   ```bash
+   git clone https://github.com/your-repository/capstone-api.git
+   cd capstone-api
+   ```
 
-## Learning Laravel
+2. Install Dependencies:
+   ```bash
+   composer install
+   ```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+3. Configure Environment Variables:
+   - Copy `.env.example` to `.env`:
+     ```bash
+     cp .env.example .env
+     ```
+   - Update `.env` with your database, Google Cloud, and application credentials.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+4. Generate Application Key:
+   ```bash
+   php artisan key:generate
+   ```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+5. Run Database Migrations:
+   ```bash
+   php artisan migrate
+   ```
 
-## Laravel Sponsors
+6. Start the Development Server:
+   ```bash
+   php artisan serve
+   ```
+   The application will be available at `http://localhost:8000`.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Deployment to Google Cloud
+1. Authenticate Google Cloud SDK:
+   ```bash
+   gcloud auth login
+   ```
 
-### Premium Partners
+2. Deploy the Application:
+   ```bash
+   gcloud app deploy
+   ```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+3. Access the Application:
+   The application will be available at the URL provided by Google Cloud.
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Using the API via Postman
 
-## Code of Conduct
+### Setting Up Postman
+1. Download and install [Postman](https://www.postman.com/downloads/).
+2. Create a new Postman collection for the API.
+3. Add the base URL for the API:
+   ```
+   https://backend-api-dot-capstone-project-441614.et.r.appspot.com
+   ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Authentication
 
-## Security Vulnerabilities
+#### Login User
+**Endpoint:** `POST /api/login`
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+**Request Body:**
+```json
+{
+    "email": "user@example.com",
+    "password": "password123"
+}
+```
 
-## License
+**Response:**
+```json
+{
+    "message": "User logged in successfully",
+    "user": {
+        "id": 2,
+        "username": "test1",
+        "email": "test@gmail.com",
+        "profile_picture": null
+    }
+}
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+#### Register User
+**Endpoint:** `POST /api/register`
+
+**Request Body:**
+```json
+{
+    "username": "exampleuser",
+    "email": "user@example.com",
+    "password": "password123"
+}
+```
+
+**Response:**
+```json
+{
+    "message": "User has been successfully created",
+    "user": {
+        "id": 1,
+        "username": "exampleuser",
+        "email": "user@example.com",
+        "profile_picture": null
+    }
+}
+```
+
+### Profile Management
+
+#### Change Password
+**Endpoint:** `POST /api/users/change-password`
+
+**Request Body:**
+```json
+{
+    "user_id": 2,
+    "old_password": "oldpassword",
+    "new_password": "newpassword123"
+}
+```
+
+**Response:**
+Success:
+```json
+{
+    "status": "success",
+    "message": "User update password successfully"
+}
+```
+Failure:
+```json
+{
+    "status": "fail",
+    "error_code": "INVALID_CREDENTIALS",
+    "message": "Update password fail! wrong password!"
+}
+```
+
+#### Update Profile
+**Endpoint:** `POST /api/users/profile`
+
+**Request Body (Example):**
+```json
+{
+    "user_id": 2,
+    "new_username": "newusername",
+    "new_email": "newemail@example.com"
+}
+```
+
+**Response:**
+```json
+{
+    "status": "success",
+    "message": "User data updated successfully",
+    "result": {
+        "username": "newusername",
+        "email": "newemail@example.com",
+        "profile_picture": "https://storage.googleapis.com/bucket-capstone-c242/profile_picture/675959686e8a8.jpeg"
+    }
+}
+```
+
+### Image Upload and Classification
+
+#### Upload Image for Classification
+**Endpoint:** `POST /api/histories/user/upload`
+
+**Request Body:**
+- `user_id` (integer, required)
+- `image` (file, required, max 5 MB, types: jpg, jpeg, png)
+- `currDate` (string, required, format: TIMESTAMP, e.g., `2024-12-10 11:51:56`)
+
+**Response:**
+```json
+{
+    "status": "success",
+    "message": "Image has been uploaded",
+    "result": {
+        "history_id": 16,
+        "user_id": "2",
+        "classification_id": 14, 
+        "classification_name": "Late Blight",
+        "healing_steps": "For late blight, remove and destroy infected plants to prevent the spread. Use fungicides with active ingredients like chlorothalonil or copper sulfate. Avoid wet foliage and promote good drainage.",
+        "classification_code": 2
+    }
+}
+```
+
+### History Management
+
+#### Retrieve All Upload Histories for a User
+**Endpoint:** `POST /api/histories/user/all`
+
+**Request Body:**
+```json
+{
+    "user_id": 2
+}
+```
+
+**Response:**
+```json
+{
+    "data": [
+        {
+            "history_id": 1,
+            "image_path": "https://storage.googleapis.com/bucket-capstone-c242/history/tomato_mosaic_virus_67582fa9cecc2.jpeg",
+            "date": "2024-12-09 17:45:30",
+            "classification_name": "Tomato Mosaic Virus"
+        },
+        {
+            "history_id": 2,
+            "image_path": "https://storage.googleapis.com/bucket-capstone-c242/history/Tomato-late-blight-72605cba08f2483aae0fd8f1dc3532a9_675835959fcbf.jpg",
+            "date": "2024-12-09 17:45:30",
+            "classification_name": "Late Blight"
+        }
+    ]
+}
+```
+
+#### Retrieve Details of a Single Upload History
+**Endpoint:** `POST /api/histories/user/single`
+
+**Request Body:**
+```json
+{
+    "user_id": 2,
+    "history_id": 16
+}
+```
+
+**Response:**
+```json
+{
+    "data": {
+        "history_id": 16,
+        "image_path": "https://storage.googleapis.com/bucket-capstone-c242/history/67594f3dbf930.jpg",
+        "date": "2024-12-09 17:45:30",
+        "classification_name": "Late Blight",
+        "healing_steps": "For late blight, remove and destroy infected plants to prevent the spread. Use fungicides with active ingredients like chlorothalonil or copper sulfate. Avoid wet foliage and promote good drainage."
+    }
+}
+```
+
+---
+
+**Note:** Ensure the proper format of input requests and adhere to file size and type constraints to avoid errors.
