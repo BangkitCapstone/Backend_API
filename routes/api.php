@@ -9,13 +9,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/login',[AuthController::class,'login']);
 Route::post('/register',[AuthController::class,'register']);
-Route::post('/images',[ImageController::class,'uploadToCloudStorage']);
-Route::post('/users/update',[UserController::class,'updateUser']);
+
+Route::post('/users/change-password', [UserController::class, 'changePassword']);
+Route::post('/users/profile', [UserController::class, 'updateUser']);
 
 Route::prefix('histories')->group(function () {
-    Route::get('user/{userId}', [HistoryController::class, 'userHistories']);
-    Route::get('user/{userId}/upload/{uploadId}', [HistoryController::class, 'userUploadHistory']);
-    Route::post('', [HistoryController::class, 'store']);
+    Route::post('/user/all', [HistoryController::class, 'userHistories']);
+    Route::post('/user/single', [HistoryController::class, 'userUploadHistory']);
+    Route::post('/user/upload', [HistoryController::class, 'store']);
 });
-
 
