@@ -35,13 +35,12 @@ class ImageController extends Controller
             $classificationResult = $response->json();
             $statusCode = $classificationResult['prediction'];
 
-            $fileName = $this->uploadToCloudStorage($imageFile);
-            $url = sprintf('https://storage.googleapis.com/%s/%s', env('CLOUD_STORAGE_BUCKET'), $fileName);
+            $url = $this->uploadToCloudStorage($imageFile,'history');
+
 
             return [
                 'imageUrl' => $url,
-                'classification' => $classificationResult['result'] ?? null,
-                'statusCode' => $statusCode,
+                'statusCode' => $statusCode
             ];
         } catch (Exception $e) {
 
@@ -53,40 +52,32 @@ class ImageController extends Controller
     /**
      * Upload the image to cloud storage and return the file name.
      */
-    private function uploadToCloudStorage(Request $request)
+    public function uploadToCloudStorage($imageFile,$folder)
     {
         try {
-
-            $imageFile = $request->file('image');
-
-            $filePath = env('GOOGLE_CLOUD_KEY_FILE');
-            $storage = new StorageClient([
-               'keyFilePath' => $filePath
-            ]);
+            $storage = new StorageClient();
 
             $bucketName = env('GOOGLE_CLOUD_STORAGE_BUCKET');
             $bucket = $storage->bucket($bucketName);
 
             $fileNameWithExtension = $imageFile->getClientOriginalName();
+            $fileName = uniqid() . '.' . $imageFile->getClientOriginalExtension();
 
-            $fileName = pathinfo($fileNameWithExtension, PATHINFO_FILENAME) . '_' . uniqid() . '.' . $imageFile->getClientOriginalExtension();
-
-            // Create a local temporary file and upload it to Google Cloud Storage
             $bucket->upload(
-                fopen($imageFile->getRealPath(), 'r'), // Open the image file for reading
+                fopen($imageFile->getRealPath(), 'r'),
                 [
-                    'name' => 'history/' . $fileName, // Set the destination file name in Google Cloud Storage
-                    
+                    'name' => $folder.'/' . $fileName,
                 ]
             );
-            return $fileName;
-        } catch (\Exception $e) {
-            Log::error('Cloud Storage upload failed', [
-                'message' => $e->getMessage(),
-                'code' => $e->getCode(),
-                'trace' => $e->getTraceAsString()
-            ]);
 
+            $url = sprintf(
+                'https://storage.googleapis.com/%s/%s/%s',
+                $bucketName,
+                $folder,
+                $fileName
+            );
+            return $url;
+        } catch (\Exception $e) {
 
             throw new \Exception(
                 'Cloud Storage Failed. Details: ' . $e->getMessage()
