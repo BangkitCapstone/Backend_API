@@ -32,8 +32,14 @@ class AuthController extends Controller
 
             return response()->json([
                 'message' => 'User has been successfully created',
+                'user' => [
+                    'id' => $user->id,
+                    'username' => $user->username,
+                    'email' => $user->email,
+                    'profile_picture' => null,
+                ]
             ], Response::HTTP_CREATED);
-        } catch (ValidationException  $e) {
+        }catch (ValidationException  $e) {
             return response()->json([
                 'status' => 'error',
                 'error_code' => 'VALIDATION FAILED',
@@ -65,13 +71,13 @@ class AuthController extends Controller
 
             if (!$user || !Hash::check($request->input('password'), $user->password)) {
                 return response()->json([
-                    'status' => 'error',
+                    'status' => 'fail',
                     'error_code' => 'INVALID_CREDENTIALS',
                     'message' => 'The provided email or password is incorrect',
-                ], Response::HTTP_UNAUTHORIZED);
+                ], Response::HTTP_OK);
             }
-
             return response()->json([
+                'status' => 'success',
                 'message' => 'User logged in successfully',
                 'user' => [
                     'id' => $user->id,
@@ -80,10 +86,6 @@ class AuthController extends Controller
                     'profile_picture' => $user->profile_picture
                 ]
             ], Response::HTTP_OK);
-
-            return response()->json([
-                'message' => 'User has been successfully login',
-            ], Response::HTTP_CREATED);
         } catch (ValidationException  $e) {
             return response()->json([
                 'status' => 'error',
@@ -103,7 +105,5 @@ class AuthController extends Controller
         }
     }
 
-    
 
-    
 }
