@@ -5,9 +5,9 @@ This documentation outlines the endpoints and features of the Capstone Project B
 ## Installation and Setup
 
 ### Requirements
-- PHP >= 8.0
+- PHP >= 8.2
 - Composer
-- Laravel Framework >= 9.x
+- Laravel Framework >= 11.x
 - Google Cloud SDK (for deployment)
 
 ### Installation Steps
@@ -174,7 +174,7 @@ Failure:
     "result": {
         "username": "newusername",
         "email": "newemail@example.com",
-        "profile_picture": "https://storage.googleapis.com/bucket-capstone-c242/profile_picture/675959686e8a8.jpeg"
+        "profile_picture": "example_URL"
     }
 }
 ```
@@ -223,13 +223,13 @@ Failure:
     "data": [
         {
             "history_id": 1,
-            "image_path": "https://storage.googleapis.com/bucket-capstone-c242/history/tomato_mosaic_virus_67582fa9cecc2.jpeg",
+            "image_path": "example_URL",
             "date": "2024-12-09 17:45:30",
             "classification_name": "Tomato Mosaic Virus"
         },
         {
             "history_id": 2,
-            "image_path": "https://storage.googleapis.com/bucket-capstone-c242/history/Tomato-late-blight-72605cba08f2483aae0fd8f1dc3532a9_675835959fcbf.jpg",
+            "image_path": "example_URL",
             "date": "2024-12-09 17:45:30",
             "classification_name": "Late Blight"
         }
@@ -253,7 +253,7 @@ Failure:
 {
     "data": {
         "history_id": 16,
-        "image_path": "https://storage.googleapis.com/bucket-capstone-c242/history/67594f3dbf930.jpg",
+        "image_path":"example_URL",
         "date": "2024-12-09 17:45:30",
         "classification_name": "Late Blight",
         "healing_steps": "For late blight, remove and destroy infected plants to prevent the spread. Use fungicides with active ingredients like chlorothalonil or copper sulfate. Avoid wet foliage and promote good drainage."
