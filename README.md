@@ -13,8 +13,8 @@ This documentation outlines the endpoints and features of the Capstone Project B
 
 1. Clone the Repository:
    ```bash
-   git clone https://github.com/your-repository/capstone-api.git
-   cd capstone-api
+   git clone https://github.com/BangkitCapstone/Backend_API.git
+   cd Backend_API
    ```
 
 2. Install Dependencies:
@@ -27,7 +27,7 @@ This documentation outlines the endpoints and features of the Capstone Project B
      ```bash
      cp .env.example .env
      ```
-   - Update `.env` with your database, Google Cloud, and application credentials.
+   - Update `.env` with your database and application credentials.
 
 4. Generate Application Key:
    ```bash
