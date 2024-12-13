@@ -46,22 +46,6 @@ This documentation outlines the endpoints and features of the Capstone Project B
    ```
    The application will be available at `http://localhost:8000`.
 
-### Deployment to Google Cloud
-1. Authenticate Google Cloud SDK:
-   ```bash
-   gcloud auth login
-   ```
-
-2. Deploy the Application:
-   ```bash
-   gcloud app deploy
-   ```
-
-3. Access the Application:
-   The application will be available at the URL provided by Google Cloud.
-
----
-
 ## Using the API via Postman
 
 ### Setting Up Postman
