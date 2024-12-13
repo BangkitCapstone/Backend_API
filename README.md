@@ -152,7 +152,7 @@ Failure:
 ```
 
 #### Update Profile
-**Endpoint:** `POST /api/users/profile`
+**Endpoint:** `POST base_url/api/users/profile`
 
 **Request Body (Example):**
 ```json
