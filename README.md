@@ -67,15 +67,12 @@ This documentation outlines the endpoints and features of the Capstone Project B
 ### Setting Up Postman
 1. Download and install [Postman](https://www.postman.com/downloads/).
 2. Create a new Postman collection for the API.
-3. Add the base URL for the API:
-   ```
-   https://backend-api-dot-capstone-project-441614.et.r.appspot.com
-   ```
+
 
 ### Authentication
 
 #### Login User
-**Endpoint:** `POST /api/login`
+**Endpoint:** `POST base_url/api/login`
 
 **Request Body:**
 ```json
@@ -99,7 +96,7 @@ This documentation outlines the endpoints and features of the Capstone Project B
 ```
 
 #### Register User
-**Endpoint:** `POST /api/register`
+**Endpoint:** `POST base_url/api/register`
 
 **Request Body:**
 ```json
@@ -126,7 +123,7 @@ This documentation outlines the endpoints and features of the Capstone Project B
 ### Profile Management
 
 #### Change Password
-**Endpoint:** `POST /api/users/change-password`
+**Endpoint:** `POST base_url/api/users/change-password`
 
 **Request Body:**
 ```json
@@ -182,7 +179,7 @@ Failure:
 ### Image Upload and Classification
 
 #### Upload Image for Classification
-**Endpoint:** `POST /api/histories/user/upload`
+**Endpoint:** `POST base_url/api/histories/user/upload`
 
 **Request Body:**
 - `user_id` (integer, required)
@@ -208,7 +205,7 @@ Failure:
 ### History Management
 
 #### Retrieve All Upload Histories for a User
-**Endpoint:** `POST /api/histories/user/all`
+**Endpoint:** `POST base_url/api/histories/user/all`
 
 **Request Body:**
 ```json
@@ -238,7 +235,7 @@ Failure:
 ```
 
 #### Retrieve Details of a Single Upload History
-**Endpoint:** `POST /api/histories/user/single`
+**Endpoint:** `POST base_url/api/histories/user/single`
 
 **Request Body:**
 ```json
