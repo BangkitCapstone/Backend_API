@@ -15,6 +15,6 @@ class History extends Model
     }
 
     public function disease():BelongsTo{
-        return $this->belongsTo(disease::class,"status_id");
+        return $this->belongsTo(Disease::class,"status_id");
     }
 }
