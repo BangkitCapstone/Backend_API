@@ -39,7 +39,7 @@ class DiseaseController extends Controller
      */
     public function show($prediction)
     {
-        $data = DB::table('tomato_leave_status')->select('id','status_name','healing_steps')->where('code','=',$prediction);
+        $data = DB::table('tomato_leave_status')->select('id','status_name','healing_steps')->where('code','=',$prediction)->first();
 
         return [
             "disease" => $data
