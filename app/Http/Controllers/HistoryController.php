@@ -39,36 +39,48 @@ class HistoryController extends Controller
             $diseaseController = new DiseaseController;
 
             $request->validate([
-                'userId' => 'required|string',
+                'user_id' => 'required|string',
                 'image' => 'required|image|mimes:jpg,jpeg,png|max:5048',
                 'currDate' => 'required'
             ]);
 
-            $userId = $request->get('id');
+            $userId = $request->get('user_id');
             $imageFile = $request->file('image');
             $currDate = $request->get('currDate');
 
             $imageData = $imageController->uploadImage($imageFile);
             $urlImage = $imageData['imageUrl'];
             $prediction  = $imageData['statusCode'];
-            $predictionData = $diseaseController->show($prediction);
-            $predId = $predictionData['id'];
+            $datas = $diseaseController->show($prediction);
+            $prediction = $datas['disease'];
+            $predId = $prediction->id;
 
             $history  = new History;
             $history->image_path = $urlImage;
             $history->users_id = $userId;
-            $history->disease_id = $predId;
+            $history->status_id = $predId;
             $history->date =  $currDate;
             $history->save();
 
+            $relatedStatus = $history->disease;
+
             return response()->json([
-                'message' => 'Image has been uploaded'
+                'status' => 'success',
+                'message' => 'Image has been uploaded',
+                'result' =>  [
+                    'history_id' => $history->id,
+                    'user_id' => $history->users_id,
+                    'classification_id' => $history->status_id,
+                    'classification_name' => $relatedStatus->status_name ?? null,
+                    'healing_steps' => $relatedStatus->healing_steps ?? null,
+                    'classification_code' => $relatedStatus->code ?? null,
+                ]
             ], Response::HTTP_CREATED);
         } catch (ValidationException $e) {
             return response()->json([
                 'status' => 'error',
                 'error_code' => 'VALIDATION_FAILED',
-                'message' => 'Validation failed for the login input data',
+                'message' => 'Validation failed for the input image data',
                 'details' => $e->errors()
             ], Response::HTTP_BAD_REQUEST);
         } catch (Exception $e) {
@@ -121,10 +133,10 @@ class HistoryController extends Controller
         $histories = History::join('tomato_leave_status', 'upload_histories.status_id', '=', 'tomato_leave_status.id')
             ->where('upload_histories.users_id', $userId)
             ->select(
-                'upload_histories.id',
+                'upload_histories.id AS history_id',
                 'upload_histories.image_path',
                 'upload_histories.date',
-                'tomato_leave_status.status_name'
+                'tomato_leave_status.status_name AS classification_name'
             )
             ->get();
 
@@ -147,10 +159,10 @@ class HistoryController extends Controller
             ->where('upload_histories.users_id', $userId)
             ->where('upload_histories.id', $historyId)
             ->select(
-                'upload_histories.id',
+                'upload_histories.id AS history_id',
                 'upload_histories.image_path',
                 'upload_histories.date',
-                'tomato_leave_status.status_name',
+                'tomato_leave_status.status_name AS classification_name',
                 'tomato_leave_status.healing_steps'
             )
             ->first();
