@@ -73,7 +73,7 @@ This documentation outlines the endpoints and features of Somat Backend API. The
         "id": 2,
         "username": "test1",
         "email": "test@gmail.com",
-        "profile_picture": null
+        "profile_picture": "example_URL"
     }
 }
 ```
