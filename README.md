@@ -8,7 +8,6 @@ This documentation outlines the endpoints and features of the Capstone Project B
 - PHP >= 8.2
 - Composer
 - Laravel Framework >= 11.x
-- Google Cloud SDK (for deployment)
 
 ### Installation Steps
 
