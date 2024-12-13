@@ -1,6 +1,6 @@
-# Capstone Project Backend API Documentation
+# Somat Backend API Documentation
 
-This documentation outlines the endpoints and features of the Capstone Project Backend API. The API supports user authentication, profile management, image classification uploads, and history management.
+This documentation outlines the endpoints and features of Somat Backend API. The API supports user authentication, profile management, image classification uploads, and history management.
 
 ## Installation and Setup
 
